@@ -10,6 +10,8 @@ const routes = [
     children: [
       { path: 'home', name: 'Home', component: () => import('../views/Home.vue'), meta: { title: '首页' } },
       { path: 'profile', name: 'Profile', component: () => import('../views/Profile.vue'), meta: { title: '我的信息' } },
+      { path: 'announcement', name: 'Announcement', component: () => import('../views/Announcement.vue'), meta: { title: '公告互动' } },
+      { path: 'leave', name: 'Leave', component: () => import('../views/Leave.vue'), meta: { title: '请假管理' } },
       { path: 'department', name: 'Department', component: () => import('../views/Department.vue'), meta: { title: '部门管理', roles: ['admin'] } },
       { path: 'major', name: 'Major', component: () => import('../views/Major.vue'), meta: { title: '专业管理', roles: ['admin'] } },
       { path: 'class', name: 'Class', component: () => import('../views/Class.vue'), meta: { title: '班级管理', roles: ['admin', 'teacher'] } },

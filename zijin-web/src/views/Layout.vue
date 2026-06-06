@@ -5,6 +5,8 @@
       <div class="sidebar-logo"><h2>紫金学院</h2><p>信息管理系统</p></div>
       <el-menu :default-active="route.path" router :collapse="false" class="sidebar-menu">
         <el-menu-item index="/home"><el-icon><HomeFilled /></el-icon><span>首页</span></el-menu-item>
+        <el-menu-item index="/announcement"><el-icon><Notification /></el-icon><span>公告互动</span></el-menu-item>
+        <el-menu-item index="/leave"><el-icon><Calendar /></el-icon><span>请假管理</span></el-menu-item>
         <template v-if="roleCode === 'admin'">
           <el-sub-menu index="hr">
             <template #title><el-icon><UserFilled /></el-icon><span>人事管理</span></template>
@@ -27,7 +29,7 @@
           </el-sub-menu>
         </template>
         <template v-if="roleCode === 'student'">
-          <el-menu-item index="/home"><el-icon><Reading /></el-icon><span>我的信息</span></el-menu-item>
+          <el-menu-item index="/profile"><el-icon><Reading /></el-icon><span>我的信息</span></el-menu-item>
         </template>
       </el-menu>
     </aside>
@@ -66,7 +68,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
-import { HomeFilled, UserFilled, School, Setting, Reading, Menu, Close, ArrowRight } from '@element-plus/icons-vue'
+import { HomeFilled, UserFilled, School, Setting, Reading, Menu, Close, ArrowRight, Notification, Calendar } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()

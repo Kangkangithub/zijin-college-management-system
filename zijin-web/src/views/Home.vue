@@ -16,10 +16,10 @@
         <el-card shadow="hover" class="stat-card"><el-statistic title="用户总数" :value="stats.users" /></el-card>
       </el-col>
       <el-col :xs="24" :sm="12" :md="8" v-if="roleCode==='student'">
-        <el-card shadow="hover" class="stat-card"><el-statistic title="我的班级" :value="studentInfo.className || '-'" /></el-card>
+        <el-card shadow="hover" class="stat-card"><div class="stat-label">我的班级</div><div class="stat-text">{{ studentInfo.className || '-' }}</div></el-card>
       </el-col>
       <el-col :xs="24" :sm="12" :md="8" v-if="roleCode==='student'">
-        <el-card shadow="hover" class="stat-card"><el-statistic title="我的专业" :value="studentInfo.majorName || '-'" /></el-card>
+        <el-card shadow="hover" class="stat-card"><div class="stat-label">我的专业</div><div class="stat-text">{{ studentInfo.majorName || '-' }}</div></el-card>
       </el-col>
     </el-row>
     <el-card shadow="hover" class="info-card">
@@ -75,6 +75,8 @@ onMounted(async () => {
 .welcome-card h1 { margin: 0; font-size: 22px; font-weight: 500; }
 .stats-row { margin-bottom: 20px; }
 .stat-card { text-align: center; }
+.stat-label { font-size: 13px; color: #999; margin-bottom: 8px; }
+.stat-text { font-size: 28px; font-weight: 600; color: #1a237e; }
 .info-card { color: #666; font-size: 14px; }
 .info-card p { margin: 6px 0; }
 @media (max-width: 767px) { .welcome-card { padding: 20px; flex-direction: column; text-align: center; } .welcome-card h1 { font-size: 18px; } }
