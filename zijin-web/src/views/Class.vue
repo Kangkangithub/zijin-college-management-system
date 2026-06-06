@@ -2,7 +2,7 @@
   <div class="page">
     <div class="page-header">
       <h2>班级管理</h2>
-      <el-button type="primary" @click="openDialog()" v-if="roleCode==='admin'"><el-icon><Plus /></el-icon>新增班级</el-button>
+      <el-button type="primary" @click="openDialog()" v-if="roleCode==='admin'||roleCode==='teacher'"><el-icon><Plus /></el-icon>新增班级</el-button>
     </div>
     <el-card shadow="hover">
       <el-table :data="list" stripe v-loading="loading" empty-text="暂无数据">
@@ -12,7 +12,7 @@
         <el-table-column label="所属专业" width="180"><template #default="{ row }">{{ majorMap[row.majorId] || '-' }}</template></el-table-column>
         <el-table-column prop="grade" label="年级" width="100" />
         <el-table-column prop="description" label="描述" show-overflow-tooltip />
-        <el-table-column label="操作" width="160" fixed="right" v-if="roleCode==='admin'">
+        <el-table-column label="操作" width="160" fixed="right" v-if="roleCode==='admin'||roleCode==='teacher'">
           <template #default="{ row }">
             <el-button type="primary" link @click="openDialog(row)">编辑</el-button>
             <el-button type="danger" link @click="handleDelete(row.id)">删除</el-button>

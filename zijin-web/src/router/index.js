@@ -12,6 +12,7 @@ const routes = [
       { path: 'department', name: 'Department', component: () => import('../views/Department.vue'), meta: { title: '部门管理', roles: ['admin'] } },
       { path: 'major', name: 'Major', component: () => import('../views/Major.vue'), meta: { title: '专业管理', roles: ['admin'] } },
       { path: 'class', name: 'Class', component: () => import('../views/Class.vue'), meta: { title: '班级管理', roles: ['admin', 'teacher'] } },
+      { path: 'students', name: 'Students', component: () => import('../views/Students.vue'), meta: { title: '学生管理', roles: ['admin', 'teacher'] } },
       { path: 'account', name: 'Account', component: () => import('../views/Account.vue'), meta: { title: '账户维护', roles: ['admin'] } },
     ]
   }

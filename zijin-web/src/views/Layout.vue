@@ -2,7 +2,7 @@
   <div class="layout" :class="{ 'mobile-sidebar-open': sidebarOpen }">
     <div class="sidebar-overlay" v-if="isMobile && sidebarOpen" @click="sidebarOpen = false"></div>
     <aside class="sidebar" :class="{ open: sidebarOpen }">
-      <div class="sidebar-logo"><h2>紫金学院</h2><p>管理系统</p></div>
+      <div class="sidebar-logo"><h2>紫金学院</h2><p>信息管理系统</p></div>
       <el-menu :default-active="route.path" router :collapse="false" class="sidebar-menu">
         <el-menu-item index="/home"><el-icon><HomeFilled /></el-icon><span>首页</span></el-menu-item>
         <template v-if="roleCode === 'admin'">

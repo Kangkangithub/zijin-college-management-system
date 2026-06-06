@@ -52,11 +52,11 @@ onMounted(async () => {
     if (roleCode.value === 'admin') {
       const [d, c, u] = await Promise.all([api.get('/department'), api.get('/class'), api.get('/user')])
       if (d.code === 200) stats.value.depts = d.data.length
-      if (c.code === 200) stats.value.classes = c.data.length
+      if (c.code === 200) stats.value.classes = c.data.length; const u2 = await api.get('/user'); if(u2.code===200) { stats.value.users = u2.data.length }
       if (u.code === 200) stats.value.users = u.data.length
     } else if (roleCode.value === 'teacher') {
       const c = await api.get('/class')
-      if (c.code === 200) stats.value.classes = c.data.length
+      if (c.code === 200) stats.value.classes = c.data.length; const u2 = await api.get('/user'); if(u2.code===200) { stats.value.users = u2.data.length }
     } else if (roleCode.value === 'student') {
       const [mRes, cRes] = await Promise.all([api.get('/major'), api.get('/class')])
       const majors = mRes.code === 200 ? mRes.data : []
