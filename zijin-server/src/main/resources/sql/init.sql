@@ -1,4 +1,4 @@
-﻿-- 紫金学院管理系统数据库初始化脚本
+-- 紫金学院管理系统数据库初始化脚本
 CREATE DATABASE IF NOT EXISTS zijin DEFAULT CHARSET utf8mb4;
 USE zijin;
 
@@ -79,6 +79,8 @@ CREATE TABLE t_user (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     pwd VARCHAR(100) NOT NULL,
+    student_no VARCHAR(20),
+    gender VARCHAR(5) DEFAULT '男',
     real_name VARCHAR(50),
     role_id INT DEFAULT 3,
     grade VARCHAR(20),
@@ -92,9 +94,14 @@ CREATE TABLE t_user (
 
 -- 测试账号
 INSERT INTO t_user VALUES
-(1, 'admin', '123456', '系统管理员', 1, NULL, NULL, NULL, '13800000001', 'admin@zijin.edu.cn', 1, '2024-01-01 00:00:00'),
-(2, 'teacher1', '123456', '张教授', 2, NULL, 2, NULL, '13800000002', 'zhang@zijin.edu.cn', 1, '2024-01-01 00:00:00'),
-(3, 'teacher2', '123456', '李老师', 2, NULL, 3, NULL, '13800000003', 'li@zijin.edu.cn', 1, '2024-01-01 00:00:00'),
-(4, 'student1', '123456', '王同学', 3, '2022级', 1, 1, '13800000004', 'wang@zijin.edu.cn', 1, '2024-01-01 00:00:00'),
-(5, 'student2', '123456', '赵同学', 3, '2022级', 2, 3, '13800000005', 'zhao@zijin.edu.cn', 1, '2024-01-01 00:00:00'),
-(6, 'student3', '123456', '陈同学', 3, '2022级', 1, 2, '13800000006', 'chen@zijin.edu.cn', 1, '2024-01-01 00:00:00');
+(1, 'admin', '123456', NULL, NULL, '系统管理员', 1, NULL, NULL, NULL, '13800000001', 'admin@zijin.edu.cn', 1, '2024-01-01 00:00:00'),
+(2, 'teacher1', '123456', NULL, NULL, '张教授', 2, NULL, 2, NULL, '13800000002', 'zhang@zijin.edu.cn', 1, '2024-01-01 00:00:00'),
+(3, 'teacher2', '123456', NULL, NULL, '李老师', 2, NULL, 3, NULL, '13800000003', 'li@zijin.edu.cn', 1, '2024-01-01 00:00:00'),
+(4, 'student1', '123456', '20220101', '男', '王同学', 3, '2022级', 1, 1, '13800000004', 'wang@zijin.edu.cn', 1, '2024-01-01 00:00:00'),
+(5, 'student2', '123456', '20220102', '男', '赵同学', 3, '2022级', 2, 3, '13800000005', 'zhao@zijin.edu.cn', 1, '2024-01-01 00:00:00'),
+(6, 'student3', '123456', '20220103', '女', '陈同学', 3, '2022级', 1, 2, '13800000006', 'chen@zijin.edu.cn', 1, '2024-01-01 00:00:00'),
+(7, 'student4', '123456', '20220201', '女', '刘同学', 3, '2022级', 2, 3, '13800000007', 'liu@zijin.edu.cn', 1, '2024-01-01 00:00:00'),
+(8, 'student5', '123456', '20220202', '男', '周同学', 3, '2022级', 3, 4, '13800000008', 'zhou@zijin.edu.cn', 1, '2024-01-01 00:00:00'),
+(9, 'student6', '123456', '20220301', '女', '吴同学', 3, '2022级', 4, 5, '13800000009', 'wu@zijin.edu.cn', 1, '2024-01-01 00:00:00'),
+(10, 'student7', '123456', '20220302', '男', '郑同学', 3, '2022级', 5, 6, '13800000010', 'zheng@zijin.edu.cn', 1, '2024-01-01 00:00:00'),
+(11, 'student8', '123456', '20220401', '女', '孙同学', 3, '2022级', 6, 7, '13800000011', 'sun@zijin.edu.cn', 1, '2024-01-01 00:00:00');

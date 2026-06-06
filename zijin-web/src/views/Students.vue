@@ -10,7 +10,7 @@
       <el-table :data="filteredList" stripe v-loading="loading" empty-text="暂无数据">
         <el-table-column prop="id" label="ID" width="70" />
         <el-table-column prop="username" label="用户名" width="120" />
-        <el-table-column prop="realName" label="姓名" width="100" />
+        <el-table-column prop="studentNo" label="学号" width="110" />`n        <el-table-column prop="realName" label="姓名" width="100" />`n        <el-table-column prop="gender" label="性别" width="60" />
         <el-table-column label="班级" width="150">
           <template #default="{ row }">{{ classMap[row.classId] || '-' }}</template>
         </el-table-column>

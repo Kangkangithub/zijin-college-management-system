@@ -8,7 +8,7 @@
       <el-table :data="list" stripe v-loading="loading" empty-text="暂无数据">
         <el-table-column prop="id" label="ID" width="70" />
         <el-table-column prop="username" label="用户名" width="120" />
-        <el-table-column prop="realName" label="真实姓名" width="100" />
+        <el-table-column prop="studentNo" label="学号" width="100" />`n        <el-table-column prop="realName" label="真实姓名" width="100" />`n        <el-table-column prop="gender" label="性别" width="60" />
         <el-table-column label="角色" width="100">
           <template #default="{ row }">
             <el-tag :type="row.roleId===1?'danger':row.roleId===2?'warning':'success'" size="small">{{ roleMap[row.roleId] || '学生' }}</el-tag>
@@ -34,7 +34,7 @@
         <el-form-item label="用户名" prop="username"><el-input v-model="form.username" placeholder="请输入用户名" :disabled="isEdit" /></el-form-item>
         <el-form-item label="密码" :prop="isEdit ? '' : 'pwd'"><el-input v-model="form.pwd" type="password" :placeholder="isEdit ? '留空则不修改' : '请输入密码'" show-password /></el-form-item>
         <el-form-item label="真实姓名" prop="realName"><el-input v-model="form.realName" placeholder="请输入真实姓名" /></el-form-item>
-        <el-form-item label="角色" prop="roleId"><el-select v-model="form.roleId" placeholder="请选择角色" style="width:100%"><el-option label="管理员" :value="1" /><el-option label="教师" :value="2" /><el-option label="学生" :value="3" /></el-select></el-form-item>
+        <el-form-item label="学号"><el-input v-model="form.studentNo" placeholder="请输入学号" /></el-form-item>`n        <el-form-item label="性别"><el-select v-model="form.gender" placeholder="请选择" style="width:100%" clearable><el-option label="男" value="男" /><el-option label="女" value="女" /></el-select></el-form-item>`n        <el-form-item label="角色" prop="roleId"><el-select v-model="form.roleId" placeholder="请选择角色" style="width:100%"><el-option label="管理员" :value="1" /><el-option label="教师" :value="2" /><el-option label="学生" :value="3" /></el-select></el-form-item>
         <el-form-item label="年级"><el-select v-model="form.grade" placeholder="请选择年级" style="width:100%" clearable><el-option label="2021级" value="2021级" /><el-option label="2022级" value="2022级" /><el-option label="2023级" value="2023级" /><el-option label="2024级" value="2024级" /></el-select></el-form-item>
         <el-form-item label="专业"><el-select v-model="form.majorId" placeholder="请选择专业" style="width:100%" clearable><el-option v-for="m in majors" :key="m.id" :label="m.majorName" :value="m.id" /></el-select></el-form-item>
         <el-form-item label="班级"><el-select v-model="form.classId" placeholder="请选择班级" style="width:100%" clearable><el-option v-for="c in classes" :key="c.id" :label="c.className" :value="c.id" /></el-select></el-form-item>
@@ -55,11 +55,11 @@ import api from '../api'
 const roleMap = { 1: '管理员', 2: '教师', 3: '学生' }
 const list = ref([]); const majors = ref([]); const classes = ref([]); const majorMap = ref({}); const classMap = ref({}); const loading = ref(false); const dialogVisible = ref(false); const saving = ref(false); const isEdit = ref(false)
 const formRef = ref(null)
-const form = reactive({ id: null, username: '', pwd: '', realName: '', roleId: 3, grade: '', majorId: null, classId: null, phone: '', email: '' })
+const form = reactive({ id: null, username: '', pwd: '', realName: '', studentNo: '', gender: '男', roleId: 3, grade: '', majorId: null, classId: null, phone: '', email: '' })
 const rules = { username: [{ required: true, message: '请输入用户名', trigger: 'blur' }], realName: [{ required: true, message: '请输入真实姓名', trigger: 'blur' }], roleId: [{ required: true, message: '请选择角色', trigger: 'change' }] }
 
 const fetchData = async () => { loading.value = true; const [uRes, mRes, cRes] = await Promise.all([api.get('/user'), api.get('/major'), api.get('/class')]); if (uRes.code === 200) list.value = uRes.data; if (mRes.code === 200) { majors.value = mRes.data; majorMap.value = Object.fromEntries(mRes.data.map(m => [m.id, m.majorName])) }; if (cRes.code === 200) { classes.value = cRes.data; classMap.value = Object.fromEntries(cRes.data.map(c => [c.id, c.className])) }; loading.value = false }
-const openDialog = (row) => { isEdit.value = !!row; if (row) { Object.assign(form, { ...row, pwd: '' }) } else { Object.assign(form, { id: null, username: '', pwd: '', realName: '', roleId: 3, grade: '', majorId: null, classId: null, phone: '', email: '' }) }; dialogVisible.value = true }
+const openDialog = (row) => { isEdit.value = !!row; if (row) { Object.assign(form, { ...row, pwd: '' }) } else { Object.assign(form, { id: null, username: '', pwd: '', realName: '', studentNo: '', gender: '男', roleId: 3, grade: '', majorId: null, classId: null, phone: '', email: '' }) }; dialogVisible.value = true }
 const handleSave = async () => { const valid = await formRef.value.validate().catch(() => false); if (!valid) return; if (!isEdit.value && !form.pwd) { ElMessage.error('请输入密码'); return }; saving.value = true; try { if (isEdit.value) await api.put('/user', form); else await api.post('/user', form); ElMessage.success(isEdit.value ? '修改成功' : '新增成功'); dialogVisible.value = false; fetchData() } catch { ElMessage.error('操作失败') } saving.value = false }
 const handleDelete = async (id) => { await ElMessageBox.confirm('确定删除该用户吗？', '提示', { type: 'warning' }); await api.delete('/user/' + id); ElMessage.success('删除成功'); fetchData() }
 const toggleStatus = async (row) => { try { await api.put('/user', { id: row.id, status: row.status }); ElMessage.success(row.status === 1 ? '已启用' : '已禁用') } catch { ElMessage.error('操作失败'); fetchData() } }

@@ -10,6 +10,8 @@ public class User {
     private Integer id;
     private String username;
     private String pwd;
+    private String studentNo;
+    private String gender;
     private String realName;
     private Integer roleId;
     private String grade;
@@ -26,6 +28,8 @@ public class User {
     public void setUsername(String username) { this.username = username; }
     public String getPwd() { return pwd; }
     public void setPwd(String pwd) { this.pwd = pwd; }
+    public String getStudentNo() { return studentNo; } public void setStudentNo(String n) { this.studentNo = n; }
+    public String getGender() { return gender; } public void setGender(String g) { this.gender = g; }
     public String getRealName() { return realName; }
     public void setRealName(String realName) { this.realName = realName; }
     public Integer getRoleId() { return roleId; }
