@@ -21,7 +21,7 @@
       </el-table>
     </el-card>
 
-    <!-- Edit/Add Dialog -->
+    <!-- Edit/Add Class Dialog -->
     <el-dialog v-model="dialogVisible" :title="isEdit ? '编辑班级' : '新增班级'" width="500px">
       <el-form :model="form" :rules="rules" ref="formRef" label-width="80px">
         <el-form-item label="班级名称" prop="className"><el-input v-model="form.className" placeholder="请输入班级名称" /></el-form-item>
@@ -34,17 +34,39 @@
     </el-dialog>
 
     <!-- Students Dialog -->
-    <el-dialog v-model="studentVisible" :title="selectedClass.className + ' - 学生名单'" width="750px">
+    <el-dialog v-model="studentVisible" :title="selectedClass.className + ' - 学生名单'" width="800px">
+      <template #header>
+        <span style="font-size:16px;font-weight:600">{{ selectedClass.className }} - 学生名单</span>
+        <el-button type="primary" size="small" style="float:right" @click="openStudentEdit()" v-if="roleCode==='admin'||roleCode==='teacher'">
+          <el-icon><Plus /></el-icon>添加学生
+        </el-button>
+      </template>
       <el-table :data="classStudents" stripe v-loading="studentLoading" empty-text="该班级暂无学生" max-height="400">
         <el-table-column type="index" label="#" width="50" />
         <el-table-column prop="studentNo" label="学号" width="110" />
         <el-table-column prop="realName" label="姓名" width="80" />
         <el-table-column prop="gender" label="性别" width="60" />
-        <el-table-column prop="grade" label="年级" width="80" />
         <el-table-column label="专业" width="150"><template #default="{ row }">{{ majorMap[row.majorId] || '-' }}</template></el-table-column>
         <el-table-column prop="phone" label="手机号" width="130" />
-        <el-table-column prop="email" label="邮箱" show-overflow-tooltip />
+        <el-table-column label="操作" width="130" fixed="right" v-if="roleCode==='admin'||roleCode==='teacher'">
+          <template #default="{ row }">
+            <el-button type="primary" link size="small" @click="openStudentEdit(row)">编辑</el-button>
+            <el-button type="danger" link size="small" @click="handleStudentDelete(row)">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
+    </el-dialog>
+
+    <!-- Student Edit Dialog -->
+    <el-dialog v-model="stuEditVisible" :title="isStuEdit ? '编辑学生' : '添加学生'" width="500px" append-to-body>
+      <el-form :model="stuForm" :rules="stuRules" ref="stuFormRef" label-width="80px">
+        <el-form-item label="学号" prop="studentNo"><el-input v-model="stuForm.studentNo" placeholder="请输入学号" /></el-form-item>
+        <el-form-item label="姓名" prop="realName"><el-input v-model="stuForm.realName" placeholder="请输入姓名" /></el-form-item>
+        <el-form-item label="性别"><el-select v-model="stuForm.gender" style="width:100%"><el-option label="男" value="男" /><el-option label="女" value="女" /></el-select></el-form-item>
+        <el-form-item label="手机号"><el-input v-model="stuForm.phone" placeholder="请输入手机号" /></el-form-item>
+        <el-form-item label="邮箱"><el-input v-model="stuForm.email" placeholder="请输入邮箱" /></el-form-item>
+      </el-form>
+      <template #footer><el-button @click="stuEditVisible = false">取消</el-button><el-button type="primary" @click="handleStudentSave" :loading="stuSaving">保存</el-button></template>
     </el-dialog>
   </div>
 </template>
@@ -58,28 +80,120 @@ import api from '../api'
 const user = JSON.parse(localStorage.getItem('zijin_user') || '{}')
 const roleIdMap = { 1: 'admin', 2: 'teacher', 3: 'student' }
 const roleCode = computed(() => roleIdMap[user.roleId] || 'student')
+
+// Class state
 const list = ref([]); const majors = ref([]); const majorMap = ref({}); const loading = ref(false)
 const dialogVisible = ref(false); const saving = ref(false); const isEdit = ref(false)
-const studentVisible = ref(false); const studentLoading = ref(false)
-const classStudents = ref([]); const selectedClass = ref({})
 const formRef = ref(null)
 const form = reactive({ id: null, className: '', classCode: '', majorId: null, grade: '', description: '' })
-const rules = { className: [{ required: true, message: '请输入班级名称', trigger: 'blur' }], classCode: [{ required: true, message: '请输入班级编码', trigger: 'blur' }], majorId: [{ required: true, message: '请选择专业', trigger: 'change' }], grade: [{ required: true, message: '请选择年级', trigger: 'change' }] }
+const rules = {
+  className: [{ required: true, message: '请输入班级名称', trigger: 'blur' }],
+  classCode: [{ required: true, message: '请输入班级编码', trigger: 'blur' }],
+  majorId: [{ required: true, message: '请选择专业', trigger: 'change' }],
+  grade: [{ required: true, message: '请选择年级', trigger: 'change' }]
+}
 
-const fetchData = async () => { loading.value = true; const [cRes, mRes] = await Promise.all([api.get('/class'), api.get('/major')]); if (cRes.code === 200) list.value = cRes.data; if (mRes.code === 200) { majors.value = mRes.data; majorMap.value = Object.fromEntries(mRes.data.map(m => [m.id, m.majorName])) }; loading.value = false }
-const openDialog = (row) => { isEdit.value = !!row; if (row) Object.assign(form, row); else Object.assign(form, { id: null, className: '', classCode: '', majorId: null, grade: '', description: '' }); dialogVisible.value = true }
-const handleSave = async () => { const valid = await formRef.value.validate().catch(() => false); if (!valid) return; saving.value = true; try { if (isEdit.value) await api.put('/class', form); else await api.post('/class', form); ElMessage.success(isEdit.value ? '修改成功' : '新增成功'); dialogVisible.value = false; fetchData() } catch { ElMessage.error('操作失败') } saving.value = false }
-const handleDelete = async (id) => { await ElMessageBox.confirm('确定删除该班级吗？', '提示', { type: 'warning' }); await api.delete('/class/' + id); ElMessage.success('删除成功'); fetchData() }
+const fetchData = async () => {
+  loading.value = true
+  const [cRes, mRes] = await Promise.all([api.get('/class'), api.get('/major')])
+  if (cRes.code === 200) list.value = cRes.data
+  if (mRes.code === 200) { majors.value = mRes.data; majorMap.value = Object.fromEntries(mRes.data.map(m => [m.id, m.majorName])) }
+  loading.value = false
+}
+const openDialog = (row) => {
+  isEdit.value = !!row
+  if (row) Object.assign(form, row)
+  else Object.assign(form, { id: null, className: '', classCode: '', majorId: null, grade: '', description: '' })
+  dialogVisible.value = true
+}
+const handleSave = async () => {
+  const valid = await formRef.value.validate().catch(() => false)
+  if (!valid) return
+  saving.value = true
+  try {
+    if (isEdit.value) await api.put('/class', form); else await api.post('/class', form)
+    ElMessage.success(isEdit.value ? '修改成功' : '新增成功')
+    dialogVisible.value = false; fetchData()
+  } catch { ElMessage.error('操作失败') }
+  saving.value = false
+}
+const handleDelete = async (id) => {
+  await ElMessageBox.confirm('确定删除该班级吗？', '提示', { type: 'warning' })
+  await api.delete('/class/' + id)
+  ElMessage.success('删除成功'); fetchData()
+}
+
+// Student state
+const studentVisible = ref(false); const studentLoading = ref(false)
+const classStudents = ref([]); const selectedClass = ref({})
+
+const stuEditVisible = ref(false); const stuSaving = ref(false); const isStuEdit = ref(false)
+const stuFormRef = ref(null)
+const stuForm = reactive({ id: null, studentNo: '', realName: '', gender: '男', phone: '', email: '', username: '', pwd: '' })
+const stuRules = {
+  studentNo: [{ required: true, message: '请输入学号', trigger: 'blur' }],
+  realName: [{ required: true, message: '请输入姓名', trigger: 'blur' }]
+}
 
 const showStudents = async (row) => {
   selectedClass.value = row
   studentVisible.value = true
   studentLoading.value = true
+  await loadStudents()
+  studentLoading.value = false
+}
+
+const loadStudents = async () => {
   try {
     const uRes = await api.get('/user')
-    if (uRes.code === 200) classStudents.value = uRes.data.filter(u => u.roleId === 3 && u.classId === row.id)
+    if (uRes.code === 200) classStudents.value = uRes.data.filter(u => u.roleId === 3 && u.classId === selectedClass.value.id)
   } catch { ElMessage.error('获取学生列表失败') }
-  studentLoading.value = false
+}
+
+const openStudentEdit = (row) => {
+  isStuEdit.value = !!row
+  if (row) {
+    Object.assign(stuForm, {
+      id: row.id, studentNo: row.studentNo || '', realName: row.realName || '',
+      gender: row.gender || '男', phone: row.phone || '', email: row.email || '',
+      username: row.username || '', pwd: ''
+    })
+  } else {
+    Object.assign(stuForm, { id: null, studentNo: '', realName: '', gender: '男', phone: '', email: '', username: '', pwd: '' })
+  }
+  stuEditVisible.value = true
+}
+
+const handleStudentSave = async () => {
+  const valid = await stuFormRef.value.validate().catch(() => false)
+  if (!valid) return
+  stuSaving.value = true
+  try {
+    if (isStuEdit.value) {
+      await api.put('/user', { id: stuForm.id, studentNo: stuForm.studentNo, realName: stuForm.realName, gender: stuForm.gender, phone: stuForm.phone, email: stuForm.email })
+      ElMessage.success('修改成功')
+    } else {
+      if (!stuForm.username) { stuForm.username = 'stu' + Date.now().toString(36) }
+      if (!stuForm.pwd) { stuForm.pwd = '123456' }
+      await api.post('/user', {
+        username: stuForm.username, pwd: stuForm.pwd,
+        studentNo: stuForm.studentNo, realName: stuForm.realName, gender: stuForm.gender,
+        roleId: 3, grade: selectedClass.value.grade, majorId: selectedClass.value.majorId,
+        classId: selectedClass.value.id, phone: stuForm.phone, email: stuForm.email
+      })
+      ElMessage.success('添加成功')
+    }
+    stuEditVisible.value = false
+    await loadStudents()
+  } catch { ElMessage.error('操作失败') }
+  stuSaving.value = false
+}
+
+const handleStudentDelete = async (row) => {
+  await ElMessageBox.confirm('确定删除学生 ' + row.realName + ' 吗？', '提示', { type: 'warning' })
+  await api.delete('/user/' + row.id)
+  ElMessage.success('删除成功')
+  await loadStudents()
 }
 
 onMounted(fetchData)
