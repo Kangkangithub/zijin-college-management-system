@@ -13,6 +13,7 @@
 ![Element Plus](https://img.shields.io/badge/Element_Plus-2.5-409EFF?logo=element&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.3-6DB33F?logo=springboot&logoColor=white)
 ![MyBatis Plus](https://img.shields.io/badge/MyBatis_Plus-3.5-1E90FF?logo=mybatis&logoColor=white)
+![ECharts](https://img.shields.io/badge/ECharts-5.5-AA344D?logo=apacheecharts&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
 ![Java](https://img.shields.io/badge/Java-17-ED8B00?logo=openjdk&logoColor=white)
 
@@ -22,7 +23,7 @@
 
 ## 📖 项目简介
 
-本项目是一个**前后端分离**的学院综合管理系统，支持 **PC 端与移动端双端适配**，划分**管理员、教师、学生**三种角色，实现菜单动态渲染、功能级权限控制与**跨角色协作交互**。
+本项目是一个**前后端分离**的学院综合管理系统，支持 **PC 端与移动端双端适配**，划分**管理员、教师、学生**三种角色，实现菜单动态渲染、功能级权限控制、**跨角色协作交互**与 **ECharts 数据可视化**。
 
 ### ✨ 核心功能
 
@@ -34,6 +35,7 @@
 | 📚 教务管理 | 班级管理 + 班级内学生管理 | 管理员/教师 |
 | ⚙️ 系统管理 | 账户维护、角色分配、状态控制 | 管理员 |
 | 👤 个人中心 | 学生信息编辑、修改密码、查看同班同学 | 学生 |
+| 📊 **数据可视化** | ECharts 柱状图、饼图、统计卡片动效 | 按角色展示 |
 | 📢 **公告互动** | 发布公告、点赞、评论互动 | 🔥 跨角色 |
 | 📝 **请假审批** | 学生提交 → 教师审批 → 管理员查看 | 🔥 跨角色 |
 
@@ -262,6 +264,7 @@ npm run dev
 | Vue Router | 4.3 | 前端路由 |
 | Pinia | 2.1 | 状态管理 |
 | Axios | 1.6 | HTTP 客户端 |
+| ECharts | 5.5 | 数据可视化图表库 |
 
 ### 后端
 | 技术 | 版本 | 用途 |
@@ -321,6 +324,11 @@ npm run dev
 | DELETE | `/api/announcement/{id}` | 删除公告及评论 |
 | PUT | `/api/announcement/like/{id}` | 点赞 +1 |
 | POST | `/api/announcement/comment` | 发表评论 |
+
+### 🆕 数据统计
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | `/api/stats` | 系统统计数据（各表数量、角色分布） |
 
 ### 🆕 请假审批
 | 方法 | 路径 | 说明 |

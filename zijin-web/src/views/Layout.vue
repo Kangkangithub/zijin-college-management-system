@@ -59,7 +59,7 @@
       <div class="mobile-breadcrumb" v-if="isMobile && route.meta.title && route.meta.title !== '首页'">
         <el-icon><ArrowRight /></el-icon> {{ route.meta.title }}
       </div>
-      <main class="content"><router-view /></main>
+      <main class="content"><router-view v-slot="{ Component }"><transition name="slide-up" mode="out-in"><component :is="Component" /></transition></router-view></main>
     </div>
   </div>
 </template>

@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="login-card">
       <div class="login-header">
-        <h1>紫金学院管理系统</h1>
+        <h1>紫金学院信息管理系统</h1>
         <p>Nanjing University of Science & Technology Zijin College</p>
       </div>
       <el-form :model="form" :rules="rules" ref="formRef" size="large">

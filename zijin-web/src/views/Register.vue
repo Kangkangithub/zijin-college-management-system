@@ -2,7 +2,7 @@
   <div class="register-container">
     <div class="register-card">
       <h1>用户注册</h1>
-      <p class="subtitle">紫金学院管理系统</p>
+      <p class="subtitle">紫金学院信息管理系统</p>
       <el-form :model="form" :rules="rules" ref="formRef" size="large" label-width="80px">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="form.username" placeholder="请输入用户名" />
